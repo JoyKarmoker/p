@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "mpi.h"
+using namespace std;
 
 int main(int argc, char *argv[]) {
     int m, n, p, k;
@@ -52,12 +53,17 @@ int main(int argc, char *argv[]) {
             mat_b[i] = matrix_element_value++;
         }
     }
+    cal_start_time = MPI_Wtime();
     MPI_Bcast(&k, 1, MPI_INT, 0, comm);
     MPI_Bcast(&m, 1, MPI_INT, 0, comm);
     MPI_Bcast(&n, 1, MPI_INT, 0, comm);
     MPI_Bcast(&p, 1, MPI_INT, 0, comm);
     
     number_of_matrix_in_each_processor = k / total_number_of_processors;
+    if(rank == total_number_of_processors)
+    {
+        number_of_matrix_in_each_processor += k%total_number_of_processors;
+    }
     l_a = (int *) malloc(number_of_matrix_in_each_processor * m * n * sizeof(int));
     l_b = (int *) malloc(number_of_matrix_in_each_processor * n * p * sizeof(int));
     l_c = (int *) malloc(number_of_matrix_in_each_processor * m * p * sizeof(int));
@@ -89,7 +95,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    cal_start_time = MPI_Wtime();
+    
     for (int c = 0; c < number_of_matrix_in_each_processor; c++) {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < p; j++) {
@@ -102,8 +108,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    cal_end_time = MPI_Wtime();
-    printf("PID %d: Total time: %lf\n", rank, cal_end_time - cal_start_time);
     idx = 0;
     for (int c = 0; c < number_of_matrix_in_each_processor; c++) {
         for (int i = 0; i < m; i++) {
@@ -115,10 +119,27 @@ int main(int argc, char *argv[]) {
 
     MPI_Gather(l_c, number_of_matrix_in_each_processor * m * p, MPI_INT, mat_c, number_of_matrix_in_each_processor * m * p, MPI_INT, 0, comm);
 
+    idx = 0;
     if (rank == 0) {
-        // Display results if needed
+        // Display 1 matrix result if needed
+        /*
+        for (int c = 0; c <1; c++) 
+        {
+            for (int i = 0; i < m; i++) 
+            {
+                for (int j = 0; j < n; j++) 
+                {
+                    cout << l_c[idx++] <<" ";
+                }
+                cout << endl;
+            }
+            cout << endl;
+        }
+        */
     }
 
+    cal_end_time = MPI_Wtime();
+    printf("PID %d: Total time: %lf\n", rank, cal_end_time - cal_start_time);
 
     MPI_Finalize();
     free(l_a);

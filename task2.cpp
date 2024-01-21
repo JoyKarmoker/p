@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     // This part checks if at least two file names are given
     if (argc < 2) {
         if (rank == 0) {
-            std::cerr << "Usage: mpiexec -n <number_of_processes> ./your_executable file1.txt file2.txt ...\n";
+            cerr << "Usage: mpiexec -n <number_of_processes> ./your_executable file1.txt file2.txt ...\n";
         }
         MPI_Finalize();
         return 1;
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
                     transform(name.begin(), name.end(), name.begin(), ::toupper);
                     if(name == search_name)
                     {
-                        cout << name << " : " << number << " Found in rank: " << rank  << " file: " << argv[i] <<endl;
+                        // cout << name << " : " << number << " Found in rank: " << rank  << " file: " << argv[i] <<endl;
                         found_number = number;
                         stopSearch = true;
                         break;
