@@ -52,9 +52,10 @@ Original file is located at
 #             }
 #         }
 # 
-#         if (searchNameLen != contactLen) {
+#         //This part is for  exact matching
+#         /*if (searchNameLen != contactLen) {
 #             flag = 0;
-#         }
+#         }*/
 # 
 #         if (flag == 1) {
 #             result[i] = i;
@@ -68,7 +69,7 @@ Original file is located at
 # 
 # int main() {
 #     Contact contacts[T];
-#     char searchName[S] = "John Doe";
+#     char searchName[S] = "Em";
 # 
 #     const char* phonebookFile_1 = "/content/input1.txt";
 #     const char* phonebookFile_2 = "/content/input2.txt";
@@ -124,7 +125,7 @@ Original file is located at
 #     dim3 blockSize(t);
 # 
 #     searchContact<<<gridSize, blockSize>>>(dContacts, dSearchName, dResult, totalContacts);
-# 
+#     cudaDeviceSynchronize();
 #     int result[t] = {0};
 #     cudaMemcpy(result, dResult, sizeof(int) * t, cudaMemcpyDeviceToHost);
 # 
