@@ -112,10 +112,12 @@ int main(int argc, char* argv[]) {
                     transform(name.begin(), name.end(), name.begin(), ::toupper);
                     if(name == search_name)
                     {
-                        // cout << name << " : " << number << " Found in rank: " << rank  << " file: " << argv[i] <<endl;
+                        transform(name.begin(), name.end(), name.begin(), ::tolower);
+                        name[0] = toupper(name[0]);
+                        cout << name << " : " << number << " Found by rank: " << rank  << " file: " << argv[i] <<endl;
                         found_number = number;
-                        stopSearch = true;
-                        break;
+                        //stopSearch = true;
+                        //break;
                     }
                 } else {
                     std::cerr << "Failed to extract name and number from the line.\n";
@@ -131,38 +133,38 @@ int main(int argc, char* argv[]) {
     }
 
     // MPI_Barrier(MPI_COMM_WORLD);
-    if(rank != 0)
-    {
-        MPI_Send(&found_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-    }
+    // if(rank != 0)
+    // {
+    //     MPI_Send(&found_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    // }
 
-    if(rank == 0)
-    {
-        int actual_number_found = 0;
-        if(found_number != 0)
-        {
-            actual_number_found = found_number;
-        }
+    // if(rank == 0)
+    // {
+    //     int actual_number_found = 0;
+    //     if(found_number != 0)
+    //     {
+    //         actual_number_found = found_number;
+    //     }
         
-        for (int i=1; i<size; i++)
-        {
-            MPI_Recv(&found_number, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            if(found_number !=0 )
-            {
-                actual_number_found = found_number;
-            }
-        }
+    //     for (int i=1; i<size; i++)
+    //     {
+    //         MPI_Recv(&found_number, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    //         if(found_number !=0 )
+    //         {
+    //             actual_number_found = found_number;
+    //         }
+    //     }
         
         
         
-        // Convert the search_name to lowerrcase
-        transform(search_name, search_name + strlen(search_name), search_name, ::tolower);
-        search_name[0] = toupper(search_name[0]);
-        if(actual_number_found != 0)
-             cout << search_name << " : " << actual_number_found <<endl;
-        else
-            cout << search_name << " : Not found" <<endl;
-    }
+    //     // Convert the search_name to lowerrcase
+    //     transform(search_name, search_name + strlen(search_name), search_name, ::tolower);
+    //     search_name[0] = toupper(search_name[0]);
+    //     if(actual_number_found != 0)
+    //          cout << search_name << " : " << actual_number_found <<endl;
+    //     else
+    //         cout << search_name << " : Not found" <<endl;
+    // }
 
     MPI_Finalize();
     return 0;
