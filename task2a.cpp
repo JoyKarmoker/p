@@ -17,10 +17,9 @@ int main(int argc, char* argv[]) {
 
     int rank, size;
     const int max_name_length = 100;
+    int maxNumberLength = 100;
     int found_number = 0;
     char search_name[max_name_length];
-    bool stopSearch = false;
-    bool printed = false;
     double cal_start_time, cal_end_time;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -75,8 +74,6 @@ int main(int argc, char* argv[]) {
 
     for(int i=1; i<argc; i++)
     {
-       if(stopSearch) //if found in other process
-            break;
         ifstream file(argv[i]);
         if(file.is_open())
         {
@@ -96,32 +93,27 @@ int main(int argc, char* argv[]) {
             }
 
             for (int j = 0; j < linesToRead; ++j) {
-                if(stopSearch) //if found in other process
-                    break;
                 getline(file, line);
                 // Process the line
                 istringstream iss(line);
                 string first_name;
-                int number;
+                string last_name;
+                string name;
+                char number[maxNumberLength];
 
                 // Extract name and number from the string stream
-                iss >> first_name >> number;
+                iss >> first_name >> last_name >> number;
+                name = first_name+last_name;
 
                 // Check if extraction was successful
                 if (iss) {
                     //std::cout << "Rank " << rank << ": Name: " << name << ", Number: " << number << "\n";
                     // Process the name and number as needed
-                    transform(first_name.begin(), first_name.end(), first_name.begin(), ::toupper);
-                    // if(name == search_name)
-                    if(first_name.find(search_name) != std::string::npos) //if search_name is substring of name
+                    transform(name.begin(), name.end(), name.begin(), ::toupper);
+                    if(name.find(search_name) != std::string::npos) //if search_name is substring of name
                     {
-                        transform(first_name.begin(), first_name.end(), first_name.begin(), ::tolower);
-                        first_name[0] = toupper(first_name[0]);
-                        // cout << first_name << " : " << number << " Found by rank: " << rank  << " file: " << argv[i] <<endl;
-                        cout << first_name << " : " << number << endl;
-                        found_number = number;
-                        //stopSearch = true;
-                        //break;
+                        cout << first_name <<" " << last_name << " : " << number << endl;
+                        found_number = 1;
                     }
                 } else {
                     std::cerr << "Failed to extract name and number from the line.\n";
@@ -147,15 +139,15 @@ int main(int argc, char* argv[]) {
         int actual_number_found = 0;
         if(found_number != 0)
         {
-            actual_number_found = found_number;
+            actual_number_found = 1;
         }
         
         for (int i=1; i<size; i++)
         {
             MPI_Recv(&found_number, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            if(found_number !=0 )
+            if(found_number != 0)
             {
-                actual_number_found = found_number;
+                actual_number_found = 1;
             }
         }
         
@@ -164,15 +156,12 @@ int main(int argc, char* argv[]) {
         // Convert the search_name to lowerrcase
         transform(search_name, search_name + strlen(search_name), search_name, ::tolower);
         search_name[0] = toupper(search_name[0]);
-        // if(actual_number_found != 0)
-        //     //  cout << search_name << " : " << actual_number_found <<endl;
-        // else
-        //     cout << search_name << " : Not found" <<endl;
-
+        
         if(actual_number_found == 0)
         {
             cout << search_name << " : Not found" << endl;
         }
+
     }
 
     MPI_Barrier(MPI_COMM_WORLD);

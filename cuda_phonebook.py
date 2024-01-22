@@ -85,19 +85,19 @@ Original file is located at
 #     }
 # 
 #     string line;
-#     while (getline(file_1, line)) {
-#         istringstream iss(line);
-#         iss.getline(contacts[totalContacts].name, S, ',');
-#         iss.getline(contacts[totalContacts].phone, S);
-#         totalContacts += 1;
-#     }
-# 
-#     while (getline(file_2, line)) {
-#         istringstream iss(line);
-#         iss.getline(contacts[totalContacts].name, S, ',');
-#         iss.getline(contacts[totalContacts].phone, S);
-#         totalContacts += 1;
-#     }
+    # while (getline(file_1, line)) {
+    #     istringstream iss(line);
+    #     iss.getline(contacts[totalContacts].name, S, ',');
+    #     iss.getline(contacts[totalContacts].phone, S);
+    #     totalContacts += 1;
+    # }
+
+    # while (getline(file_2, line)) {
+    #     istringstream iss(line);
+    #     iss.getline(contacts[totalContacts].name, S, ',');
+    #     iss.getline(contacts[totalContacts].phone, S);
+    #     totalContacts += 1;
+    # }
 # 
 #     file_1.close();
 #     file_2.close();
