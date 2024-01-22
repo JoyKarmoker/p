@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
     MPI_Bcast(&p, 1, MPI_INT, 0, comm);
     
     number_of_matrix_in_each_processor = k / total_number_of_processors;
-    if(rank == total_number_of_processors)
+    if(rank == total_number_of_processors-1)
     {
         number_of_matrix_in_each_processor += k%total_number_of_processors;
     }
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
     idx = 0;
     if (rank == 0) {
         // Display 1 matrix result if needed
-        /*
+        
         for (int c = 0; c <1; c++) 
         {
             for (int i = 0; i < m; i++) 
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
             }
             cout << endl;
         }
-        */
+        
     }
 
     cal_end_time = MPI_Wtime();
