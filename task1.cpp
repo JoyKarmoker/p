@@ -118,7 +118,8 @@ int main(int argc, char *argv[]) {
     }
 
     MPI_Gather(l_c, number_of_matrix_in_each_processor * m * p, MPI_INT, mat_c, number_of_matrix_in_each_processor * m * p, MPI_INT, 0, comm);
-
+    // MPI_Barrier(comm);
+    
     idx = 0;
     if (rank == 0) {
         // Display 1 matrix result if needed
@@ -137,7 +138,7 @@ int main(int argc, char *argv[]) {
         }
         
     }
-
+    MPI_Barrier(comm);
     cal_end_time = MPI_Wtime();
     printf("PID %d: Total time: %lf\n", rank, cal_end_time - cal_start_time);
 
